@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>database</type>
+		<description>Language labels for database tables/fields belonging to extension 'ga_basics'</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="pages.tx_gabasics_disabletracking">Disable tracking for this page</label>
+			<label index="pages.tx_gabasics_pageviewurl">URL for trackPageview (if empty the canonical of this page will be used)</label>
+			<label index="pages.tx_gabasics_donottrackpageview">Do not track pageview for this page</label>
+			<label index="pages.tx_gabasics_additionaljscode">Additional JS code (additional lines of _gaq.push() that get output in the header)</label>
+			<label index="pages_language_overlay.tx_gabasics_disabletracking">Disable tracking for this page</label>
+			<label index="pages_language_overlay.tx_gabasics_pageviewurl">URL for trackPageview (if empty the canonical of this page will be used)</label>
+			<label index="pages_language_overlay.tx_gabasics_donottrackpageview">Do not track pageview for this page</label>
+			<label index="pages_language_overlay.tx_gabasics_additionaljscode">Additional JS code (additional lines of _gaq.push() that get output in the header)</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="pages.tx_gabasics_disabletracking">Tracking für diese Seite deaktivieren (GA-Code wird nicht eingebunden)</label>
+			<label index="pages.tx_gabasics_pageviewurl">Manuelle URL für Pageview-Tracking (verwendet diese URL anstatt der Cononical URL für die aktuelle Seite)</label>
+			<label index="pages.tx_gabasics_donottrackpageview">Pageview-Tracking für diese Seite deaktivieren</label>
+			<label index="pages.tx_gabasics_additionaljscode">Zusätzlicher JS-Code (für weitere Zeilen mit _gaq.push()-Anweisungen, werden im Header der Seite ausgegeben)</label>
+			<label index="pages_language_overlay.tx_gabasics_disabletracking">Tracking für diese Seite deaktivieren (GA-Code wird nicht eingebunden)</label>
+			<label index="pages_language_overlay.tx_gabasics_pageviewurl">Manuelle URL für Pageview-Tracking (verwendet diese URL anstatt der Cononical URL für die aktuelle Seite)</label>
+			<label index="pages_language_overlay.tx_gabasics_donottrackpageview">Pageview-Tracking für diese Seite deaktivieren</label>
+			<label index="pages_language_overlay.tx_gabasics_additionaljscode">Zusätzlicher JS-Code (für weitere Zeilen mit _gaq.push()-Anweisungen, werden im Header der Seite ausgegeben)</label>
+		</languageKey>
+	</data>
+</T3locallang>

@@ -1,0 +1,15 @@
+plugin.tx_gabasics {
+	
+	# cat=plugin.gabasics/string; type=string; label= Google Analytics Tracking Property-ID (UA-No.)
+	ua-no = UA-34520334-1
+	
+	# cat=plugin.gabasics/string; type=string; label= GET parameters to be excluded from automatically generated canonical url for pagetracking (Default: cHash,no_cache,type,print)
+	excludeParameters = cHash,no_cache,type,print
+	
+	# cat=plugin.gabasics/string; type=boolean; label= Anonymize IP addresses
+	anonymizeIPs = 1
+	
+	# cat=plugin.gabasics/string; type=int+; label= Set custom sitespeedsample value (only suitable for sites with less than 50K visitors, if empty defaults to Google Analytics default)
+	sitespeedsample = 
+	
+}

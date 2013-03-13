@@ -1,0 +1,74 @@
+plugin.tx_gabasics = COA
+plugin.tx_gabasics {
+
+		# Append a line break for every header tag
+	5 = TEXT
+	5.value (
+
+	
+)
+
+		# Building the Google Analytics Tracking Code and Tracking Snippet
+	10 = TEXT
+	10.value = var _gaq = _gaq || [];
+	10.append < .5
+	
+		# set GA profile ID
+	20 = TEXT
+	20.value = {$plugin.tx_gabasics.ua-no}
+	20.wrap = _gaq.push(['_setAccount', '|']);
+	20.append < .5
+	
+		# Set Sitespeedsample value?
+	30 = TEXT
+	30.value = {$plugin.tx_gabasics.sitespeedsample}
+	30.wrap = _gaq.push(['_setSiteSpeedSampleRate', |]);
+	30.required = 1
+	30.append < .5
+	
+		# Anonymize IP?
+	40 = TEXT
+	40.value =  _gaq.push(['_gat._anonymizeIp']);
+	40.if.isTrue = {$plugin.tx_gabasics.anonymizeIPs}
+	40.append < .5
+	
+		# track the pageview if set, use the canonical url built with typolink or use the given parameter 
+		# from  page properties
+	50 = TEXT
+	50 {
+			# first: track manually added tracking-code
+		data = page:tx_gabasics_pageviewurl
+			# second: if empty, track canonical url
+		override.typolink.parameter.data = TSFE:id
+		override.typolink.addQueryString = 1
+		override.typolink.addQueryString.exclude = cHash,no_cache,type,print
+		override.typolink.addQueryString.exclude.override.value = {$plugin.tx_gabasics.excludeParameters}
+		override.typolink.returnLast = url
+		override.if.isFalse.data = page:tx_gabasics_pageviewurl
+			# only track pageview if not disabled for this page
+		if.isFalse.data = page:tx_gabasics_donottrackpageview
+		wrap = _gaq.push(['_trackPageview', '|']);
+	}
+	50.append < .5
+	
+		# Allow for additional GA-Code to be put in the header, e.g. Event-Tracking etc.
+	60 = TEXT
+	60.data = page:tx_gabasics_additionaljscode
+	60.append < .5
+	
+		# the main Google Analytics JS-Code
+	100 = TEXT
+	100.value = (function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();
+	100.append < .5
+	
+		# wrap everything in JS-Tags
+	wrap = <script type="text/javascript"> | </script>
+	
+		# only track if not disabled
+	if.isFalse.data = page:tx_gabasics_disabletracking
+}
+
+
+
+	# activate Google Analytics in main "page." configuration
+page.headerData.1342 = < plugin.tx_gabasics
