@@ -90,8 +90,9 @@ $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_pi1']='la
 t3lib_extMgm::addPlugin(array(
 	'LLL:EXT:ga_basics/locallang_db.xml:tt_content.list_type_pi1',
 	$_EXTKEY . '_pi1',
-	t3lib_extMgm::extRelPath($_EXTKEY) . 'ext_icon.gif'
+	t3lib_extMgm::extRelPath($_EXTKEY) . 'ext_icon.png'
 ),'list_type');
 
 t3lib_extMgm::addStaticFile($_EXTKEY,'static/', 'Google Analytics Basics');
+
 ?>

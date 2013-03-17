@@ -9,7 +9,6 @@ CREATE TABLE pages (
 );
 
 
-
 #
 # Table structure for table 'pages_language_overlay'
 #
