@@ -233,7 +233,7 @@ class tx_gabasics {
 			// if there is no headercode based on Cross Domain Tracking and the domain list given
 			// use the setdomain instead (for simple domain/subdomain-tracking)
 		if ($this->configuration['setdomainname']) {
-			return "_gap.push(['_setDomainName', '" . $this->configuration['setdomainname'] . "']);\r\n	";
+			return "_gaq.push(['_setDomainName', '" . $this->configuration['setdomainname'] . "']);\r\n	";
 		}
 	}
 
