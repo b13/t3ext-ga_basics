@@ -12,4 +12,32 @@ plugin.tx_gabasics {
 	# cat=plugin.gabasics/string; type=int+; label= Set custom sitespeedsample value (only suitable for sites with less than 50K visitors, if empty defaults to Google Analytics default)
 	sitespeedsample = 
 	
+	
+	# cat=plugin.gabasics/string; type=string; label= PID or comma separated list of pids that represent error pages. If set every display of an error page will not result in a pageview but will fire an event of the type "error" with the url that was requested for analysis within Google Analytics. Note: Errortracking is set using PIDinRootline, so subpages of any pid listed here will be treated as error pages.
+	errorpid =
+	
+	# cat=plugin.gabasics/string; type=string; label= Set a domain name to enable tracking across a domain and its subdomain. This basically adds a '_setDomainName' to the initial Google Analytics Code to allow for tracking of a website with different subdomains, like www.b13.de and store.b13.de. Give the main domain (b13.de) here. If you use more than one domain, leave this blank and use the options for Cross Domain Tracking.
+	setdomainname =
+	
+	
+	# cat=plugin.gabasics/string; type=boolean; label= Active Special Cross-Domain-Tracking
+	crossdomaintracking =
+	
+	# cat=plugin.gabasics/string; type=string; label= Domains that belong together and will be linked between using special configuration for Cross-Domain-Tracking. Write a comma separated list of domains to which additional parameters should apply. Notice www.google.com is not the same as google.com.
+	crossdomain_domainlist =
+	
+	# cat=pluign.gabasics/string; type=boolean; label= Allow subdomains for Cross Domain List to be implied. This marks 'google.com' and 'www.google.com' as Cross Domain Links if the domain 'google.com' is listed in cross_domainlist. If this checkbox is not set, both 'google.com' and 'www.google.com' need to be listed in crossdomain_domainlist. You should use this checkbox if you have a site with a lot of subdomains of different domains.
+	crossdomain_includesubdomains =
+	
+	
+	# cat=plugin.gabasic/string; type=boolean; label= Activate Special Download Tracking. This enables tracking of all clicked links to files in the filesystem using Google Analytics Events.
+	downloadtracking = 1
+	
+	# cat=plugin.gabasics/string; type=string; label= List of filename extensions that will be tracked as download files. If this list is empty all links that appear to be links to files will be tracked using Google Analytics Event Tracking
+	download_extlist =
+	
+	
+	# cat=plugin.gabasics/string; type=boolean; label= Activate External Link Tracking. This enables tracking of all clicked links to external websites. If Cross Domain Tracking is active only links to domains not belonging to the list for Cross Domain Tracking will be tracked using Google Analytics Event Tracking
+	externallinktracking = 1
+	
 }

@@ -1,3 +1,19 @@
+plugin.tx_gabasics.settings {
+	ua-no = {$plugin.tx_gabasics.ua-no}
+	excludeParameters = {$plugin.tx_gabasics.excludeParameters}
+	anonymizeIPs = {$plugin.tx_gabasics.anonymizeIPs}
+	sitespeedsample = {$plugin.tx_gabasics.sitespeedsample}
+	errorpid = {$plugin.tx_gabasics.errorpid}
+	setdomainname = {$plugin.tx_gabasics.setdomainname}
+	crossdomaintracking = {$plugin.tx_gabasics.crossdomaintracking}
+	crossdomain_domainlist = {$plugin.tx_gabasics.crossdomain_domainlist}
+	crossdomain_includesubdomains = {$plugin.tx_gabasics.crossdomain_includesubdomains}
+	downloadtracking = {$plugin.tx_gabasics.downloadtracking}
+	download_extlist = {$plugin.tx_gabasics.download_extlist}
+	externallinktracking = {$plugin.tx_gabasics.externallinktracking}
+}
+
+
 plugin.tx_gabasics = COA
 plugin.tx_gabasics {
 
@@ -15,13 +31,18 @@ plugin.tx_gabasics {
 	
 		# set GA profile ID
 	20 = TEXT
-	20.value = {$plugin.tx_gabasics.ua-no}
+	20.value < plugin.tx_gabasics.settings.ua-no
 	20.wrap = _gaq.push(['_setAccount', '|']);
 	20.append < .5
 	
+		# set a domain for cross domain or subdomain linking
+	25 = TEXT
+	25.cObject = USER
+	25.cObject.userFunc = tx_gabasics->getDomainTrackingCode
+	
 		# Set Sitespeedsample value?
 	30 = TEXT
-	30.value = {$plugin.tx_gabasics.sitespeedsample}
+	30.value < plugin.tx_gabasics.settings.sitespeedsample
 	30.wrap = _gaq.push(['_setSiteSpeedSampleRate', |]);
 	30.required = 1
 	30.append < .5
@@ -59,7 +80,12 @@ plugin.tx_gabasics {
 		# the main Google Analytics JS-Code
 	100 = TEXT
 	100.value = (function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();
-	100.append < .5
+
+	105 = TEXT
+	105.value (
+
+
+)
 	
 		# wrap everything in JS-Tags
 	wrap = <script type="text/javascript"> | </script>
@@ -68,6 +94,14 @@ plugin.tx_gabasics {
 	if.isFalse.data = page:tx_gabasics_disabletracking
 }
 
+# if errorpids are set track the error-event
+[PIDinRootline = {$plugin.tx_gabasics.errorpid}]
+	plugin.tx_gabasics.50 >
+	plugin.tx_gabasics.50 = TEXT
+	plugin.tx_gabasics.50.data = getenv:HTTP_REFERER
+	plugin.tx_gabasics.50.wrap = _gaq.push(['_trackEvent', 'Error', '|']);
+	plugin.tx_gabasics.50.append < plugin.tx_gabasics.5
+[global]
 
 
 	# activate Google Analytics in main "page." configuration
