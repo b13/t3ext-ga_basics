@@ -31,6 +31,211 @@
 
 class tx_gabasics {
 
+	/**
+	 * parameter to add
+	 *
+	 * @var string
+	 */
+	protected $applicableParameters = NULL;
+
+	/**
+	 * the key of the extension
+	 *
+	 * @var string
+	 */
+	protected $extensionKey = 'ga_basics';
+
+	/**
+	 * the configuration of the extension
+	 *
+	 * @var array
+	 */
+	protected $configuration = array();
+
+	/**
+	 * enable Cross Domain Tracking
+	 *
+	 * @var boolean
+	 */
+	protected $crossDomainTracking = FALSE;
+
+	/**
+	 * domains for Cross Domain Tracking
+	 *
+	 * @var array
+	 */
+	protected $linkDomains = array();
+	
+	/**
+	 * include subdomains in Cross Domain Tracking for all domains given
+	 *
+	 * @var boolean
+	 */
+	protected $includeSubdomains = FALSE;
+	
+	/**
+	 * enable Download Tracking
+	 *
+	 * @var boolean
+	 */
+	protected $downloadTracking = FALSE;
+
+	/**
+	 * file extension list for Download Tracking
+	 *
+	 * @var array
+	 */
+	protected $fileExtensions = array();
+
+	/**
+	 * enable External Link Tracking
+	 *
+	 * @var boolean
+	 */
+	protected $externalLinkTracking = FALSE;
+	
+	/**
+	 * Constructor
+	 *
+	 * @return void
+	 */
+	public function __construct() {
+
+		// Remind: this class is a singleton so attributes need to be initialized only once
+		if (empty($this->configuration)) {
+			$this->configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extensionKey]);
+			$this->configuration = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_gabasics.']['settings.'];
+			
+				// enable Cross Domain Tracking
+			$this->crossDomainTracking = $this->configuration['crossdomaintracking'];
+			if ($this->crossDomainTracking) {
+				$this->linkDomains = explode(',', $this->configuration['crossdomain_domainlist']);
+				$this->linkDomains = array_map('trim', $this->linkDomains);
+				$this->includeSubdomains = $this->configuration['crossdomain_includesubdomains'];
+			}
+			
+				// enable Download Tracking
+			$this->downloadTracking = $this->configuration['downloadtracking'];
+			if ($this->downloadTracking) {
+				$this->fileExtensions = explode(',', $this->configuration['download_extlist']);
+				$this->fileExtensions = array_map('trim', $this->fileExtensions);
+			}
+			
+				// enable External Link Tracking
+			$this->externalLinkTracking = $this->configuration['externallinktracking'];
+		}
+	}
+
+
+	/**
+	 * Process all links to add additional classes to Cross-Domain-Links, Download-Links, External Links
+	 *
+	 * @param array $parameters: Array of parameters from typoLink_PostProc hook in tslib_content
+	 * @param object $cObj: Reference to the calling tslib_content instance
+	 * @return void
+	 */
+	public function processAllLinks (&$parameters, &$pObj) {
+
+			// external Link Tracking
+		if ($this->externalLinkTracking || $this->crossDomainTracking) {
+				// track external URL
+			if (isset($parameters['finalTagParts']['TYPE']) && $parameters['finalTagParts']['TYPE'] == 'url') {
+				if (stristr($parameters['finalTag'], 'data-gabasicsnotracking="1"')) {
+					// do not change anything
+				} 
+				else {
+					$trackCrossDomain = FALSE;
+					// check to see if we need to consider Cross Domain Tracking
+					if ($this->crossDomainTracking && $this->linkDomains) {
+						foreach ($this->linkDomains as $checkdomain) {
+							if ($this->includeSubdomains) {
+								// this registers in a link like b13.de/index.php or like "b13.de"
+								if (stristr($parameters['finalTag'], '' . $checkdomain . '/') || 
+									stristr($parameters['finalTag'], '' . $checkdomain . '"')) {
+										$trackCrossDomain = TRUE;
+								}
+							} else {
+								// this registers in a link like b13.de/index.php
+								if (stristr($parameters['finalTag'], '//' . $checkdomain . '/') ||
+									stristr($parameters['finalTag'], '//' . $checkdomain . '"')) {
+										$trackCrossDomain = TRUE;
+								}
+							}
+						}
+					}
+					if ($trackCrossDomain) {
+						// add Cross Domain Link Parameter
+						if (!stristr($parameters['finalTag'], 'data-gabasicstracklink')) {
+							// add data tag to the final Tag output and the ATagParams
+							$parameters['finalTag'] = str_replace('>', ' data-gabasicstracklink="1">', $parameters['finalTag']);
+							$parameters['finalTagParts']['aTagParams'] .= ' data-gabasicstracklink="1"';
+						}
+					} else if ($this->externalLinkTracking) {
+						// do the standard or External Link Tracking
+						if (!stristr($parameters['finalTag'], 'data-gabasicstrackexternal')) {
+							// add data tag to the final Tag output and the ATagParams
+							$parameters['finalTag'] = str_replace('>', ' data-gabasicstrackexternal="1">', $parameters['finalTag']);
+							$parameters['finalTagParts']['aTagParams'] .= ' data-gabasicstrackexternal="1"';
+						}
+					}
+				}
+				
+				return;
+			}
+		}
+		
+			// track File Downloads
+		if ($this->downloadTracking) {
+			if (isset($parameters['finalTagParts']['TYPE']) && $parameters['finalTagParts']['TYPE'] == 'file') {
+				if (stristr($parameters['finalTag'], 'data-gabasicsnotracking="1"')) {
+					// do not change anything
+				} else if (!stristr($parameters['finalTag'], 'data-gabasicstrackdownload')) {
+					// add data tag to the final Tag output and the ATagParams
+					$parameters['finalTag'] = str_replace('>', ' data-gabasicstrackdownload="1">', $parameters['finalTag']);
+					$parameters['finalTagParts']['aTagParams'] .= ' data-gabasicstrackdownload="1">';
+				}
+				return;
+			}
+		}
+	}
+
+	/**
+	 * User Function that returns the Header Code for
+	 * a) Cross Domain Tracking, if the currently used domain is in the list of domains to link
+	 * b) setDomainName, if there is no Cross Domain Tracking Domainlist but setdomainname has a value
+	 *
+	 * @param array $content
+	 * @param array $conf
+	 * @return string
+	 */
+
+	public function getDomainTrackingCode($content, $conf) {
+		$returnHeaderCode = "";
+			// build the header code for Cross Domain Tracking
+		if ($this->crossDomainTracking && $this->linkDomains) {
+				// the domain that is being used in the current page
+			$currentDomain = t3lib_div::getIndpEnv('HTTP_HOST');
+				// the domain we will give in the _setDomainName header code
+			$domainName = "";
+			foreach ($this->linkDomains as $checkdomain) {
+				if (stristr($currentDomain, $checkdomain)) {
+					$domainName = $checkdomain;
+					continue;
+				}
+			}
+			if ($domainName) {
+				$returnHeaderCode = "_gaq.push(['_setDomainName', '" . $domainName ."']);\r\n	";
+				$returnHeaderCode .= "_gaq.push(['_setAllowLinker', true]);\r\n	";
+			}
+				// return the header code if not still empty
+			if ($returnHeaderCode) return $returnHeaderCode;
+		}
+			// if there is no headercode based on Cross Domain Tracking and the domain list given
+			// use the setdomain instead (for simple domain/subdomain-tracking)
+		if ($this->configuration['setdomainname']) {
+			return "_gap.push(['_setDomainName', '" . $this->configuration['setdomainname'] . "']);\r\n	";
+		}
+	}
 
 }
 

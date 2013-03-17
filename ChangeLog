@@ -1,4 +1,9 @@
 2013-03-02 David Steeb, b:dreizehn GmbH  <david.steeb@b13.de>
 
 	* initial code generated with kickstarter
-.
+	
+2013-03-17 David Steeb, b:dreizehn GmbH
+
+	* added data-attributes to external links and file downloads to all typolinks
+	* added data-attributes for cross-domain-tracking to all typolinks
+	* added error page tracking as events (via pid list in constants)
