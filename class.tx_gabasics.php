@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *  
-*  (c) 2013 David Steeb <david.steeb@b13.de>
+*  (c) 2013 David Steeb <typo3@b13.de>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is 
@@ -23,7 +23,7 @@
 ***************************************************************/
 
 /** 
- * @author		David Steeb (david.steeb@b13.de) 
+ * @author		David Steeb (typo3@b13.de) 
  * @subpackage	tx_gabasics
  * 
  * This package includes all hook implementations.

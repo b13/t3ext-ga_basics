@@ -9,6 +9,7 @@ $TYPO3_CONF_VARS['FE']['pageOverlayFields'] .= ',tx_gabasics_disabletracking,tx_
 t3lib_extMgm::addPItoST43($_EXTKEY, 'pi1/class.tx_gabasics_pi1.php', '_pi1', 'list_type', 1);
 
 
+
 	// adding the link processor to the typolink function
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['typoLink_PostProc']['tx_gabasics'] =
 	'EXT:ga_basics/class.tx_gabasics.php:&tx_gabasics->processAllLinks';

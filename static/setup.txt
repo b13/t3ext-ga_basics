@@ -106,3 +106,9 @@ plugin.tx_gabasics {
 
 	# activate Google Analytics in main "page." configuration
 page.headerData.1342 = < plugin.tx_gabasics
+
+	# include the JS for tracking
+	
+page.includeJSlibs.jquery = EXT:ga_basics/res/js/jquery-1.9.1.min.js
+page.includeJSlibs.jquery.if.isTrue = {$plugin.tx_gabasics.includejQuery}
+page.includeJS.xgabasics = EXT:ga_basics/res/js/main.js
