@@ -38,10 +38,15 @@ require_once(PATH_tslib.'class.tslib_pibase.php');
  * @subpackage	tx_gabasics
  */
 class tx_gabasics_pi1 extends tslib_pibase {
+
+// not needed at the moment
+
+/*
 	var $prefixId      = 'tx_gabasics_pi1';		// Same as class name
 	var $scriptRelPath = 'pi1/class.tx_gabasics_pi1.php';	// Path to this script relative to the extension dir.
 	var $extKey        = 'ga_basics';	// The extension key.
 	var $pi_checkCHash = true;
+*/
 	
 	/**
 	 * The main method of the PlugIn
@@ -50,6 +55,7 @@ class tx_gabasics_pi1 extends tslib_pibase {
 	 * @param	array		$conf: The PlugIn configuration
 	 * @return	The content that is displayed on the website
 	 */
+/*
 	function main($content, $conf) {
 		$this->conf = $conf;
 		$this->pi_setPiVarDefaults();
@@ -72,6 +78,7 @@ class tx_gabasics_pi1 extends tslib_pibase {
 	
 		return $this->pi_wrapInBaseClass($content);
 	}
+*/
 }
 
 

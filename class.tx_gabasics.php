@@ -88,6 +88,13 @@ class tx_gabasics {
 	protected $fileExtensions = array();
 
 	/**
+	 * list of file extensions that we need to ignore when tracking downloads
+	 *
+	 * @var array
+	 */
+	protected $fileExtensionsToIgnore = array();
+	
+	/**
 	 * enable External Link Tracking
 	 *
 	 * @var boolean
@@ -119,6 +126,7 @@ class tx_gabasics {
 			if ($this->downloadTracking) {
 				$this->fileExtensions = explode(',', $this->configuration['download_extlist']);
 				$this->fileExtensions = array_map('trim', $this->fileExtensions);
+				$this->fileExtensionsToIgnore = explode(',', $this->configuration['download_extlisttoignore']);
 			}
 			
 				// enable External Link Tracking
@@ -190,7 +198,27 @@ class tx_gabasics {
 				if (stristr($parameters['finalTag'], 'data-gabasicsnotracking="1"')) {
 					// do not change anything
 				} else if (!stristr($parameters['finalTag'], 'data-gabasicstrackdownload')) {
-					// add data tag to the final Tag output and the ATagParams
+						// if the file has a file extension we want to skip, do not mark the link
+					if ($this->fileExtensionsToIgnore) {
+						foreach($this->fileExtensionsToIgnore as $extension) {
+							if (stristr($parameters['finalTag'], '.' . $extension)) {
+								return;
+							}
+						}
+					}
+						// if the file has not been skipped check to see if the file extension is on the white list
+					if ($this->fileExtensions) {
+						foreach($this->fileExtensions as $extension) {
+							if (stristr($parameters['finalTag'], '.' . $extension)) {
+								// add data tag to the final Tag output and the ATagParams
+								$parameters['finalTag'] = str_replace('>', ' data-gabasicstrackdownload="1">', $parameters['finalTag']);
+								$parameters['finalTagParts']['aTagParams'] .= ' data-gabasicstrackdownload="1">';
+								return;
+							}
+						}
+						return;
+					}
+						// add data tag to the final Tag output and the ATagParams if there is no white list
 					$parameters['finalTag'] = str_replace('>', ' data-gabasicstrackdownload="1">', $parameters['finalTag']);
 					$parameters['finalTagParts']['aTagParams'] .= ' data-gabasicstrackdownload="1">';
 				}

@@ -10,6 +10,7 @@ plugin.tx_gabasics.settings {
 	crossdomain_includesubdomains = {$plugin.tx_gabasics.crossdomain_includesubdomains}
 	downloadtracking = {$plugin.tx_gabasics.downloadtracking}
 	download_extlist = {$plugin.tx_gabasics.download_extlist}
+	download_extlisttoignore = {$plugin.tx_gabasics.download_extlisttoignore}
 	externallinktracking = {$plugin.tx_gabasics.externallinktracking}
 }
 
