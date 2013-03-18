@@ -29,43 +29,59 @@
  */
 
 
-	// tracks external links as events of type "Outbound Links" 
-$(document).on('click', 'a[data-gabasicstrackexternal="1"]', function(evt) {
-	evt.preventDefault(); 
-	var url = $(this).attr('href');
-	try {
-		_gaq.push(['_trackEvent', 'Link', 'Outbound Links', $(this).attr('href')]);
-		window.setTimeout(function() {
-			window.open(url);
-		}, 200);
-	} catch(err){}
-});
+	// wait until jQuery is defined
+try {
+	var interval = window.setInterval(function() {
+		var jQueryIsDefined = window.jQuery?true:false;
+		if (jQueryIsDefined) {
+			window.clearInterval(interval);
+			bindTrackingEvents();
+		}
+	}, 50);
+} catch(err){ console.log(err); }
 
 
-	// tracks downloads as events of type "Download"
-$(document).on('click', 'a[data-gabasicstrackdownload="1"]', function(evt) {
-	evt.preventDefault();
-	var url = $(this).attr('href');
-	try {
-		_gaq.push(['_trackEvent', 'Link', 'Download', $(this).attr('href')]);
-		window.setTimeout(function() {
-			window.open(url);
-		}, 200);
-	} catch(err){}
-});
 
+function bindTrackingEvents() {
 
-	// sets gaq.push-link parameter so Google Analytics won't set referers from our own domains
-$(document).on('click', 'a[data-gabasicstracklink="1"]', function(evt) {
-	evt.preventDefault();
-	var url = $(this).attr('href');
-	try {
-		_gaq.push(['_link', $(this).attr('href')]);
-		window.setTimeout(function() {
-//			window.location.href = url;
-//			window.open(url);
-		}, 200);
-	} catch(err){}
-});
-
-
+		// tracks external links as events of type "Outbound Links" AND downloads as events of type "Download"
+	$(document).on('click', 'a[data-gabasicstrackexternal="1"], a[data-gabasicstrackdownload="1"]', function(evt) {
+		evt.preventDefault();
+		var 
+			url       = $(this).attr('href')
+			,linkType = '';
+		
+		if ($(this).data('gabasicstrackexternal') == 1) {
+			
+				// events of type "Outbound Links" 
+			linkType = 'Outbound Links';
+			
+		} else if ($(this).data('gabasicstrackdownload') == 1) {
+			
+				// events of type "Download"
+			linkType = 'Download';
+		}
+		
+		try {
+			_gaq.push(['_trackEvent', 'Link', linkType, url]);
+			window.setTimeout(function() {
+				window.open(url);
+			}, 200);
+		} catch(err){ console.log(err); }
+	});
+		
+		// sets gaq.push-link parameter so Google Analytics won't set referers from our own domains
+	$(document).on('click', 'a[data-gabasicstracklink="1"]', function(evt) {
+		evt.preventDefault();
+		
+		var url = $(this).attr('href');
+		
+		try {
+			_gaq.push(['_link', url]);
+			window.setTimeout(function() {
+	//			window.location.href = url;
+	//			window.open(url);
+			}, 200);
+		} catch(err){ console.log(err) }
+	});
+}
