@@ -84,4 +84,26 @@ function bindTrackingEvents() {
 			}, 200);
 		} catch(err){ console.log(err) }
 	});
+	
+		// tracks individually added clicks to Google Analytics as Events
+		// use data-gabasicstrackclick="1" to register for a click and data-gabasicstrackclicklabel="Label" as the label for the event
+	$(document).on('click', 'a[data-gabasicstrackclick="1"]', function(evt) {
+		evt.preventDefault();
+		var 
+			url       = $(this).attr('href')
+			,label    = $(this).data('gabasicstrackclicklabel');
+		
+		if (label.length == 0) {
+			label = "url";
+		}
+		
+		try {
+			_gaq.push(['_trackEvent', 'Click', label, url]);
+			window.setTimeout(function() {
+				window.open(url);
+			}, 200);
+		} catch(err){ console.log(err); }
+		
+	});
+
 }
