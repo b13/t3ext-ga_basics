@@ -83,6 +83,7 @@
 			try {
 				_gaq.push(['_link', url]);
 				window.setTimeout(function() {
+//					window.location.href = url;
 				}, 200);
 			} catch(err){ console.log(err) }
 		});
@@ -102,6 +103,7 @@
 			try {
 				_gaq.push(['_trackEvent', 'Click', label, url]);
 				window.setTimeout(function() {
+					window.location.href = url;
 				}, 200);
 			} catch(err){ console.log(err); }
 			
