@@ -42,6 +42,8 @@
 	} catch(err){ console.log(err); }
 
 
+
+
 	function bindTrackingEvents() {
 
 		var $ = window.jQuery;
@@ -88,12 +90,12 @@
 		});
 		
 			// tracks individually added clicks to Google Analytics as Events
-			// use data-gabasictrackclick="1" to register for a click and data-gabasictrackclicklabel="Label" as the label for the event
-		$(document).on('click', 'a[data-gabasictrackclick="1"]', function(evt) {
+			// use data-gabasicstrackclick="1" to register for a click and data-gabasicstrackclicklabel="Label" as the label for the event
+		$(document).on('click', 'a[data-gabasicstrackclick="1"]', function(evt) {
 			evt.preventDefault();
 			var 
 				url       = $(this).attr('href')
-				,label    = $(this).data('gabasictrackclicklabel');
+				,label    = $(this).data('gabasicstrackclicklabel');
 			
 			if (label.length == 0) {
 				label = "url";
@@ -111,4 +113,3 @@
 	}
 
 })(window.jQuery)
-
