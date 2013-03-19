@@ -42,8 +42,6 @@
 	} catch(err){ console.log(err); }
 
 
-
-
 	function bindTrackingEvents() {
 
 		var $ = window.jQuery;
@@ -113,3 +111,4 @@
 	}
 
 })(window.jQuery)
+
