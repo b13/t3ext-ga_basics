@@ -71,7 +71,6 @@
 			var 
 				url	        = $this.attr('href')
 				,linkAction = $this.attr('target') === "_blank" ? 'newWindow' : 'update'
-				,label      = $this.data('gabasicstrackclicklabel').length > 0 ? $(this).data('gabasicstrackclicklabel') : url
 				,pushMsg    = ['_trackEvent', 'Link', linkType, url];
 
 			if ($this.data('gabasiscupdateurl') == false) { linkAction = ''; }
@@ -89,7 +88,7 @@
 				$this       = $(this)
 				,url	    = $this.attr('href')
 				,linkAction = $this.attr('target') === "_blank" ? 'newWindow' : 'update'
-				,label      = $this.data('gabasicstrackclicklabel').length > 0 ? $(this).data('gabasicstrackclicklabel') : url
+				,label      = $this.data('gabasicstrackclicklabel') ? $(this).data('gabasicstrackclicklabel') : url
 				,pushMsg    = ['_trackEvent', 'Click', label, url];
 
 			if ($this.data('gabasiscupdateurl') == false) { linkAction = ''; }
