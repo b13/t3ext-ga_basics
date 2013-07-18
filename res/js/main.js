@@ -39,7 +39,7 @@
 				bindTrackingEvents();
 			}
 		}, 50);
-	} catch(err){ console.log(err); }
+	} catch(err){ /* console.log(err); */ }
 
 
 
@@ -74,7 +74,11 @@
 
 			if ($this.data('gabasiscupdateurl') == false) { linkAction = ''; }
 
-			doTracking(pushMsg, url, linkAction);
+				// make sure that just one new window will be opened. 
+				// for some links data-gabasicstrackclick="" is set hard coded in typoscript, so just fire this event if data-gabasicstrackclick="" is NOT set!
+			if ($this.attr('data-gabasicstrackclick').length == 0) {
+				doTracking(pushMsg, url, linkAction);
+			}
 			
 		});
 
@@ -132,7 +136,7 @@
 				}, 300);
 			
 			});
-		} catch(err){ console.log(err); }
+		} catch(err){ /* console.log(err); */ }
 	}
 
 })(window.jQuery);
