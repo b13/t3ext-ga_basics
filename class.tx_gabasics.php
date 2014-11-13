@@ -265,6 +265,57 @@ class tx_gabasics {
 		}
 	}
 
+	/**
+	 * User Function that creates the "ga('create')"-Code for inclusion in the head of the page
+	 * This function returns
+	 *   ga('require', 'linker');
+	 *   ga('linker:autoLink', ['domain1', 'domain2']);
+	 *   ga('create', 'UA-XXX', 'auto', {
+	 *     'allowLinker': true,
+	 *     'siteSpeedSampleRate': 50
+	 *   });
+	 * with
+	 *   - allowLinker set if cross-domain-tracking is required
+	 *   - siteSpeedSampleRate set as defined in constants
+	 *
+	 * @param array $content
+	 * @param array $conf
+	 * @return string
+	 */
+
+	public function getTrackingConfigurationCode($content, $conf) {
+
+		$returnHeaderCode = "";
+
+			// build the header code for Cross Domain Tracking
+		if ($this->crossDomainTracking && $this->linkDomains) {
+				// the domain that is being used in the current page
+			$currentDomain = t3lib_div::getIndpEnv('HTTP_HOST');
+				// the domain we will give in the _setDomainName header code
+			$domainName = "";
+			foreach ($this->linkDomains as $checkdomain) {
+				if (stristr($currentDomain, $checkdomain)) {
+					$domainName = $checkdomain;
+					continue;
+				}
+			}
+			if ($domainName) {
+				$returnHeaderCode  = "ga('require', 'linker');\r\n	";
+				$returnHeaderCode .= "ga('linker:autoLink', ['" . implode("', '", $this->linkDomains) . "']);\r\n	";
+				$returnHeaderCode .= "ga('create', '" . $this->configuration['ua-no'] . "', 'auto', {\r\n		"
+				. "'allowLinker': true,\r\n		"
+				. "'siteSpeedSampleRate': " . $this->configuration['sitespeedsample'] . "\r\n	"
+				. "});\r\n	";
+			}
+
+		} else {
+			$returnHeaderCode = "ga('create', '" . $this->configuration['ua-no'] . "', 'auto', {\r\n		"
+			. "'siteSpeedSampleRate': " . $this->configuration['sitespeedsample'] . "});\r\n	";
+		}
+			// return the header code if not still empty
+		if ($returnHeaderCode) return $returnHeaderCode;
+	}
+
 }
 
 

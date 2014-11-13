@@ -15,8 +15,8 @@ plugin.tx_gabasics.settings {
 }
 
 
-plugin.tx_gabasics = COA
-plugin.tx_gabasics {
+plugin.tx_gabasicsOld = COA
+plugin.tx_gabasicsOld {
 
 		# Append a line break for every header tag
 	5 = TEXT
@@ -91,6 +91,70 @@ plugin.tx_gabasics {
 		# wrap everything in JS-Tags
 	wrap = <script type="text/javascript"> | </script>
 	
+		# only track if not disabled
+	if.isFalse.data = page:tx_gabasics_disabletracking
+}
+
+
+plugin.tx_gabasics = COA
+plugin.tx_gabasics {
+
+		# Append a line break for every header tag
+	5 = TEXT
+	5.value (
+
+
+)
+
+		# the main Google Analytics JS-Code
+	10 = TEXT
+	10.value (
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	)
+	10.append < .5
+
+		# this includes the header code for creation of the ga-tracker
+	20 = TEXT
+	20.cObject = USER
+	20.cObject.userFunc = tx_gabasics->getTrackingConfigurationCode
+
+		# Anonymize IP?
+	40 = TEXT
+	40.value =  ga('set', 'anonymizeIp', true);
+	40.if.isTrue = {$plugin.tx_gabasics.anonymizeIPs}
+	40.append < .5
+
+		# track the pageview if set, use the canonical url built with typolink or use the given parameter
+		# from  page properties
+	50 = TEXT
+	50 {
+			# first: track manually added tracking-code
+		data = page:tx_gabasics_pageviewurl
+			# second: if empty, track canonical url
+		override.typolink.parameter.data = TSFE:id
+		override.typolink.addQueryString = 1
+		override.typolink.addQueryString.exclude = cHash,no_cache,type,print
+		override.typolink.addQueryString.exclude.override.value = {$plugin.tx_gabasics.excludeParameters}
+		override.typolink.returnLast = url
+		override.if.isFalse.data = page:tx_gabasics_pageviewurl
+			# only track pageview if not disabled for this page
+		if.isFalse.data = page:tx_gabasics_donottrackpageview
+		wrap = ga('send', 'pageview', '|');
+	}
+	50.append < .5
+
+		# Allow for additional GA-Code to be put in the header, e.g. Event-Tracking etc.
+	60 = TEXT
+	60.data = page:tx_gabasics_additionaljscode
+	60.append < .5
+
+
+		# wrap everything in JS-Tags
+	wrap = <script type="text/javascript"> | </script>
+
 		# only track if not disabled
 	if.isFalse.data = page:tx_gabasics_disabletracking
 }
