@@ -113,3 +113,4 @@ page.headerData.1342 = < plugin.tx_gabasics
 page.includeJSlibs.jquery = EXT:ga_basics/res/js/jquery-1.9.1.min.js
 page.includeJSlibs.jquery.if.isTrue = {$plugin.tx_gabasics.includejQuery}
 page.includeJS.xgabasics = EXT:ga_basics/res/js/main.js
+page.includeJS.xgabasics.if.isTrue = {$plugin.tx_gabasics.includeJavaScript}

@@ -42,5 +42,8 @@ plugin.tx_gabasics {
 	
 	# cat=plugin.gabasics/string; type=boolean; label= Include jQuery from our package? Tick this box if no other is loading jQuery
 	includejQuery = 0
-	
+
+	# cat=plugin.gabasics/string; type=boolean; label= Include the JavaScript provided with this extension. Turn off if you include the JS into your own JS-Build.
+	includeJavaScript = 1
+
 }
