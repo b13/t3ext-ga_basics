@@ -8,3 +8,8 @@
 	* added data-attributes for cross-domain-tracking to all typolinks
 	* added error page tracking as events (via pid list in constants)
 	* added JavaScript to enable tracking on all links
+
+2014-11-13 David Steeb, b:dreizehn GmbH
+
+	* changes to JavaScript code
+	* introduce constant to disable inclusion of all JavaScript code
