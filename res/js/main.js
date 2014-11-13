@@ -39,80 +39,71 @@
 				bindTrackingEvents();
 			}
 		}, 50);
-	} catch(err){ /* console.log(err); */ }
+	} catch(err){ console.log(err); }
 
 
 
 		// bind tracking events
 		// if the link url should not be change your window location add a data-gabasiscupdateurl="false" to the <a>-tag
+		//
+		// if the link we want to track opens with target="_blank" we let the browser handle the link click and just add
+		// a tracking function to the link. For all other targets that might be external links or change the content of
+		// our browser window that does the tracking and runs this JS we need to prevent the link from opening the href
+		// right away, do the tracking, wait and refresh the url - configured using linkAction="update"
 	function bindTrackingEvents() {
 
 		var $ = window.jQuery;
 
-			// tracks external links as events of type "Outbound Links" AND downloads as events of type "Download"
-		$(document).on('click', 'a[data-gabasicstrackexternal="1"], a[data-gabasicstrackdownload="1"]', function() {
 
-			var 
-				$this     = $(this)
-				,linkType = '';
+		// tracks external links as events of type "Outbound Links"
+		$(document).on('click', 'a[data-gabasicstrackexternal="1"], a[data-gabasicstrackdownload="1"], a[data-gabasicstrackclick="1"]', function(evt) {
 
+			var	$this       = $(this)
+				linkType    = 'Default Event';
+
+			// track external links
 			if ($this.data('gabasicstrackexternal') == 1) {
-
-					// events of type "Outbound Links" 
-				linkType = 'Outbound Links';
-
-			} else if ($this.data('gabasicstrackdownload') == 1) {
-
-					// events of type "Download"
-				linkType = 'Download';
+				var linkType = 'Link';
+			}
+			// track downloaded files
+			if ($this.data('gabasicstrackdownload') == 1) {
+				var linkType = 'Download';
+			}
+			// track clicks
+			if ($this.data('gabasicstrackclick') == 1) {
+				var linkType = 'Click';
 			}
 
-			var 
-				url	        = $this.attr('href')
-				,linkAction = $this.attr('target') === "_blank" ? 'newWindow' : 'update'
-				,pushMsg    = ['_trackEvent', 'Link', linkType, url];
+			var
+				url	    = $this.attr('href')
+				,linkAction = $this.attr('target') === "_blank" ? '' : 'update'
+				,label      = $this.data('gabasicstrackclicklabel') ? $(this).data('gabasicstrackclicklabel') : ( $this.attr('title') ? $(this).attr('title') : url )
+				,pushMsg    = ['_trackEvent', linkType, label, url];
 
 			if ($this.data('gabasiscupdateurl') == false) { linkAction = ''; }
-
-				// make sure that just one new window will be opened. 
-				// for some links data-gabasicstrackclick="" is set hard coded in typoscript, so just fire this event if data-gabasicstrackclick="" is NOT set!
-			if ($this.attr('data-gabasicstrackclick').length == 0) {
-				doTracking(pushMsg, url, linkAction);
-			}
-			
-		});
-
-
-			// tracks individually added clicks to Google Analytics as Events
-			// use data-gabasicstrackclick="1" to register for a click and data-gabasicstrackclicklabel="Label" as the label for the event
-		$(document).on('click', 'a[data-gabasicstrackclick="1"]', function(evt) {			
-			evt.preventDefault();
-			var 
-				$this       = $(this)
-				,url	    = $this.attr('href')
-				,linkAction = $this.attr('target') === "_blank" ? 'newWindow' : 'update'
-				,label      = $this.data('gabasicstrackclicklabel') ? $(this).data('gabasicstrackclicklabel') : url
-				,pushMsg    = ['_trackEvent', 'Click', label, url];
-
-			if ($this.data('gabasiscupdateurl') == false) { linkAction = ''; }
+			if (linkAction == 'update') { evt.preventDefault(); }
 
 			doTracking(pushMsg, url, linkAction);
+
 		});
 
 
+			// for multi-domain tracking
 			// sets gaq.push-link parameter so Google Analytics won't set referers from our own domains
 		$(document).on('click', 'a[data-gabasicstracklink="1"]', function(evt) {
-			evt.preventDefault();
-			var 
+
+			var
 				$this       = $(this)
 				,url	    = $this.attr('href')
-				,linkAction = $this.attr('target') === "_blank" ? 'newWindow' : 'update'
+				,linkAction = $this.attr('target') === "_blank" ? '' : 'update'
 				,pushMsg    = ['_link', url];
 				
 			if ($this.data('gabasiscupdateurl') == false) { linkAction = ''; }
+			if (linkAction == 'update') { evt.preventDefault(); }
 
 			doTracking(pushMsg, url, linkAction);
 		});
+
 	}
 	
 		// push the msg to GA and fire the link action
@@ -121,22 +112,17 @@
 
 		try {
 			_gaq.push(pushMsg, function() {
-				
-				window.setTimeout(function() {
-					switch (linkAction) {
-						case 'newWindow':
-							window.open(url);
-						break;
-						case 'update':
-							window.location.href = url;
-						break;
-						default:
-							// do not update url
-					}
-				}, 300);
-			
+
+				// handle the reload if the linkAction is set to "update" (this means we used evt.preventDefault() before
+				// and need to handle the link ourselves
+				if (linkAction == 'update') {
+					window.setTimeout(function() {
+						window.location.href = url;
+					}, 300);
+				}
+
 			});
-		} catch(err){ /* console.log(err); */ }
+		} catch(err){ console.log(err); }
 	}
 
 })(window.jQuery);
