@@ -12,7 +12,7 @@
 
 $EM_CONF[$_EXTKEY] = array (
 	'title' => 'Google Analytics Basics',
-	'description' => 'Adds basic Google Analytics features for sidewide integration of Google Analytics Tracking Code and the ability to manipulate some aspects of the tracking code on a page basis (page properties).',
+	'description' => 'Adds basic Google Analytics features for sitewide integration of Google Analytics Tracking Code and the ability to manipulate some aspects of the tracking code on a page basis (page properties). Modifies all typolink generated links to allow for event tracking.',
 	'category' => 'fe',
 	'author' => 'David Steeb, b:dreizehn GmbH',
 	'author_email' => 'typo3@b13.de',
@@ -29,7 +29,7 @@ $EM_CONF[$_EXTKEY] = array (
 	'clearCacheOnLoad' => 0,
 	'lockType' => '',
 	'author_company' => '',
-	'version' => '1.2.0',
+	'version' => '1.3.0',
 	'constraints' => 
 	array (
 		'depends' => 
