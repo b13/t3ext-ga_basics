@@ -128,7 +128,8 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 	40.append < .5
 
 		# track the pageview if set, use the canonical url built with typolink or use the given parameter
-		# from  page properties
+		# from page properties
+		# this gets overwritten if on error page (error event gets tracked)
 	50 = TEXT
 	50 {
 			# first: track manually added tracking-code
@@ -164,7 +165,7 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 	plugin.tx_gabasics.50 >
 	plugin.tx_gabasics.50 = TEXT
 	plugin.tx_gabasics.50.data = getenv:HTTP_REFERER
-	plugin.tx_gabasics.50.wrap = _gaq.push(['_trackEvent', 'Error', '|']);
+	plugin.tx_gabasics.50.wrap = ga('send', 'event', 'Error', '|');
 	plugin.tx_gabasics.50.append < plugin.tx_gabasics.5
 [global]
 
