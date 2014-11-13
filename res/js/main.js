@@ -58,7 +58,7 @@
 		// tracks external links as events of type "Outbound Links"
 		$(document).on('click', 'a[data-gabasicstrackexternal="1"], a[data-gabasicstrackdownload="1"], a[data-gabasicstrackclick="1"]', function(evt) {
 
-			var	$this       = $(this)
+			var	$this        = $(this)
 				,linkType    = 'Default Event';
 
 			// track external links
@@ -75,15 +75,31 @@
 			}
 
 			var
-				url	    = $this.attr('href')
+				url	        = $this.attr('href')
 				,linkAction = $this.attr('target') === "_blank" ? '' : 'update'
-				,label      = $this.data('gabasicstrackclicklabel') ? $(this).data('gabasicstrackclicklabel') : ( $this.attr('title') ? $(this).attr('title') : url )
-				,pushMsg    = ['_trackEvent', linkType, label, url];
+				,label      = $this.data('gabasicstrackclicklabel') ? $(this).data('gabasicstrackclicklabel') : ( $this.attr('title') ? $(this).attr('title') : url );
 
 			if ($this.data('gabasiscupdateurl') == false) { linkAction = ''; }
 			if (linkAction == 'update') { evt.preventDefault(); }
 
-			doTracking(pushMsg, url, linkAction);
+			// fire the event tracking
+			try {
+				ga('send', {
+					'hitType': 'event',
+					'eventCategory': linkType,
+					'eventAction': label,
+					'eventLabel': url,
+					'hitCallback': function () {
+						// handle the reload if the linkAction is set to "update" (this means we used evt.preventDefault() before
+						// and need to handle the link ourselves
+						if (linkAction == 'update') {
+							window.setTimeout(function () {
+								window.location.href = url;
+							}, 300);
+						}
+					}
+				});
+			} catch(err) { console.log(err); }
 
 		});
 
@@ -110,19 +126,21 @@
 		// @linkAction: can be "newWindow" to open the link in a new Window, "update" to update the url or "" to do nothing
 	function doTracking(pushMsg, url, linkAction) {
 
-		try {
-			_gaq.push(pushMsg, function() {
-
-				// handle the reload if the linkAction is set to "update" (this means we used evt.preventDefault() before
-				// and need to handle the link ourselves
-				if (linkAction == 'update') {
-					window.setTimeout(function() {
-						window.location.href = url;
-					}, 300);
-				}
-
-			});
-		} catch(err){ console.log(err); }
+		// removed as we need a new way to track things with Universal Analytics
+		//try {
+		//
+		//		_gaq.push(pushMsg, function() {
+		//
+		//		// handle the reload if the linkAction is set to "update" (this means we used evt.preventDefault() before
+		//		// and need to handle the link ourselves
+		//		if (linkAction == 'update') {
+		//			window.setTimeout(function() {
+		//				window.location.href = url;
+		//			}, 300);
+		//		}
+		//
+		//	});
+		//} catch(err){ console.log(err); }
 	}
 
 })(window.jQuery);
