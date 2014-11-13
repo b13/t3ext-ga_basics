@@ -59,7 +59,7 @@
 		$(document).on('click', 'a[data-gabasicstrackexternal="1"], a[data-gabasicstrackdownload="1"], a[data-gabasicstrackclick="1"]', function(evt) {
 
 			var	$this       = $(this)
-				linkType    = 'Default Event';
+				,linkType    = 'Default Event';
 
 			// track external links
 			if ($this.data('gabasicstrackexternal') == 1) {
