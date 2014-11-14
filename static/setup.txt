@@ -143,6 +143,7 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 		override.if.isFalse.data = page:tx_gabasics_pageviewurl
 			# only track pageview if not disabled for this page
 		if.isFalse.data = page:tx_gabasics_donottrackpageview
+		if.isFalse.override.data = page:tx_gabasics_disabletracking
 		wrap = ga('send', 'pageview', '|');
 	}
 	50.append < .5
