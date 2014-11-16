@@ -180,3 +180,44 @@ page.includeJSlibs.jquery = EXT:ga_basics/res/js/jquery-1.9.1.min.js
 page.includeJSlibs.jquery.if.isTrue = {$plugin.tx_gabasics.includejQuery}
 page.includeJS.xgabasics = EXT:ga_basics/res/js/main.js
 page.includeJS.xgabasics.if.isTrue = {$plugin.tx_gabasics.includeJavaScript}
+
+
+
+/**
+ * add the content element for event tracking
+ *
+ * the event tracking code looks something like this:
+ * ga('send', 'event', 'category', 'action', 'label', 'value', {'nonInteraction': 1})
+ */
+tt_content.gabasics_trackevent = COA
+tt_content.gabasics_trackevent {
+		# the category
+	10 = TEXT
+	10.field = header
+	10.wrap = , '|'
+		# the action
+	20 = TEXT
+	20.field = subheader
+	20.wrap = , '|'
+		# the label (optional)
+	30 = TEXT
+	30.field = bodytext
+	30.wrap = , '|'
+	30.required.field = bodytext
+		# the value (optional)
+	40 = TEXT
+	40.field = titleText
+	40.wrap = , '|'
+	40.required.field = titleText
+	40.if.isTrue.field = bodytext
+		# send nonInteraction if set
+	50 = TEXT
+	50.value = , {'nonInteraction': 1}
+	50.if.isTrue.field = imageborder
+
+	wrap = <script>ga('send', 'event' | );</script>
+
+	# only include tracking of events if tracking of page is not disabled (no ga code would be included and the JS would
+	# throw an error)
+	if.isFalse.data = page:tx_gabasics_disabletracking
+}

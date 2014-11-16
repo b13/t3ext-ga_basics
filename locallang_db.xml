@@ -13,8 +13,18 @@
 			<label index="pages_language_overlay.tx_gabasics_disabletracking">Disable tracking for this page</label>
 			<label index="pages_language_overlay.tx_gabasics_pageviewurl">URL for trackPageview (if empty the canonical of this page will be used)</label>
 			<label index="pages_language_overlay.tx_gabasics_donottrackpageview">Do not track pageview for this page</label>
-			<label index="pages_language_overlay.tx_gabasics_additionaljscode">Additional JS code (additional lines of _gaq.push() that get output in the header)</label>
+			<label index="pages_language_overlay.tx_gabasics_additionaljscode">Additional JS code (additional lines of ga('send') that get output in the header)</label>
+
+			<label index="tt_content.CType.tab">Google Analytics Tracking</label>
+			<label index="tt_content.CType.gabasics_trackevent">Google Analytics: Fire event</label>
+			<label index="tt_content.CType.gabasics_trackevent.description">Inserts an event tracking pixel that fires a user defined event to Google Analytics</label>
+			<label index="tt_content.CType.gabasics_trackevent.header.label">Event category (e.g. 'Registration')</label>
+			<label index="tt_content.CType.gabasics_trackevent.subheader.label">Event action (e.g. 'Registration submitted')</label>
+			<label index="tt_content.CType.gabasics_trackevent.bodytext.label">Event label (optional, e.g. 'Quickregistration used')</label>
+			<label index="tt_content.CType.gabasics_trackevent.titleText.label">Event value (numeric, optional, only transmits if a label is set)</label>
+			<label index="tt_content.CType.gabasics_trackevent.imageborder.label">Set event as 'nonInteraction' (does not affect bounce rate)</label>
 		</languageKey>
+
 		<languageKey index="de" type="array">
 			<label index="pages.tx_gabasics_disabletracking">Tracking für diese Seite komplett deaktivieren (GA-Code wird nicht eingebunden)</label>
 			<label index="pages.tx_gabasics_pageviewurl">Manuelle URL für Pageview-Tracking (verwendet diese URL anstatt der Cononical URL für die aktuelle Seite)</label>
@@ -23,7 +33,16 @@
 			<label index="pages_language_overlay.tx_gabasics_disabletracking">Tracking für diese Seite deaktivieren (GA-Code wird nicht eingebunden)</label>
 			<label index="pages_language_overlay.tx_gabasics_pageviewurl">Manuelle URL für Pageview-Tracking (verwendet diese URL anstatt der Cononical URL für die aktuelle Seite)</label>
 			<label index="pages_language_overlay.tx_gabasics_donottrackpageview">Pageview-Tracking für diese Seite deaktivieren</label>
-			<label index="pages_language_overlay.tx_gabasics_additionaljscode">Zusätzlicher JS-Code (für weitere Zeilen mit _gaq.push()-Anweisungen, werden im Header der Seite ausgegeben)</label>
+			<label index="pages_language_overlay.tx_gabasics_additionaljscode">Zusätzlicher JS-Code (für weitere Zeilen mit ga('send')-Anweisungen, werden im Header der Seite ausgegeben)</label>
+
+			<label index="tt_content.CType.tab">Google Analytics Tracking</label>
+			<label index="tt_content.CType.gabasics_trackevent">Google Analytics: Event feuern</label>
+			<label index="tt_content.CType.gabasics_trackevent.description">Fügt ein Event Tracking Pixel ein, das ein benutzerdefiniertes Event an Google Analytics abfeuert</label>
+			<label index="tt_content.CType.gabasics_trackevent.header.label">Event Kategorie (z.B. 'Registrierung'</label>
+			<label index="tt_content.CType.gabasics_trackevent.subheader.label">Event Aktion (z.B. 'Registrierung abgeschickt')</label>
+			<label index="tt_content.CType.gabasics_trackevent.bodytext.label">Event Label (optional, z.B. 'Schnellregistrierung wurde verwendet')</label>
+			<label index="tt_content.CType.gabasics_trackevent.titleText.label">Event Wert (numerisch, optional, wird nur übermittelt wenn ein Label gesetzt ist)</label>
+			<label index="tt_content.CType.gabasics_trackevent.imageborder.label">Event als 'nonInteraction' klassifizieren (hat keinen Einfluss auf die Bounce-Rate)</label>
 		</languageKey>
 	</data>
 </T3locallang>
