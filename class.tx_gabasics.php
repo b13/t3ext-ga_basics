@@ -180,7 +180,8 @@ class tx_gabasics {
 						}
 					} else if ($this->externalLinkTracking) {
 						// do the standard or External Link Tracking
-						if (!stristr($parameters['finalTag'], 'data-gabasicstrackexternal')) {
+						// make sure we only add additional parameters if not alredy set (for external AND click)
+						if (!stristr($parameters['finalTag'], 'data-gabasicstrackexternal') && (!stristr($parameters['finalTag'], 'data-gabasicstrackclick'))) {
 							// add data tag to the final Tag output and the ATagParams
 							$parameters['finalTag'] = str_replace('>', ' data-gabasicstrackexternal="1">', $parameters['finalTag']);
 							$parameters['finalTagParts']['aTagParams'] .= ' data-gabasicstrackexternal="1"';
