@@ -59,25 +59,26 @@
 		$(document).on('click', 'a[data-gabasicstrackexternal="1"], a[data-gabasicstrackdownload="1"], a[data-gabasicstrackclick="1"]', function(evt) {
 
 			var	$this        = $(this)
-				,linkType    = 'Default Event';
+				,eventCategory    = 'Default Event';
 
 			// track external links
 			if ($this.data('gabasicstrackexternal') == 1) {
-				var linkType = 'Link';
+				var eventCategory = 'Outbound Link';
 			}
 			// track downloaded files
 			if ($this.data('gabasicstrackdownload') == 1) {
-				var linkType = 'Download';
+				var eventCategory = 'Download';
 			}
 			// track clicks
 			if ($this.data('gabasicstrackclick') == 1) {
-				var linkType = 'Click';
+				var eventCategory = $this.data('gabasicseventcategory') ? $(this).data('gabasicseventcategory') : 'Click';
 			}
 
 			var
 				url	        = $this.attr('href')
 				,linkAction = $this.attr('target') === "_blank" ? '' : 'update'
-				,label      = $this.data('gabasicstrackclicklabel') ? $(this).data('gabasicstrackclicklabel') : ( $this.attr('title') ? $(this).attr('title') : url );
+				,eventAction      = $this.data('gabasicseventaction') ? $(this).data('gabasicseventaction') : ( $this.attr('title') ? $(this).attr('title') : url )
+				,eventLabel = $this.data('gabasicseventlabel') ? $(this).data('gabasicseventlabel') : ( $this.attr('alt') ? $(this).attr('alt') : url );
 
 			if ($this.data('gabasiscupdateurl') == false) { linkAction = ''; }
 			if (linkAction == 'update') { evt.preventDefault(); }
@@ -86,9 +87,9 @@
 			try {
 				ga('send', {
 					'hitType': 'event',
-					'eventCategory': linkType,
-					'eventAction': label,
-					'eventLabel': url,
+					'eventCategory': eventCategory,
+					'eventAction': eventAction,
+					'eventLabel': eventLabel,
 					'hitCallback': function () {
 						// handle the reload if the linkAction is set to "update" (this means we used evt.preventDefault() before
 						// and need to handle the link ourselves
