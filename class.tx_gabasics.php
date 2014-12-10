@@ -1,31 +1,31 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*  
-*  (c) 2013,2014 David Steeb <typo3@b13.de>
-*  All rights reserved
-*
-*  This script is part of the Typo3 project. The Typo3 project is 
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-* 
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-* 
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice
+ *
+ *  (c) 2013,2014 David Steeb <typo3@b13.de>
+ *  All rights reserved
+ *
+ *  This script is part of the Typo3 project. The Typo3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 
-/** 
- * @author		David Steeb (typo3@b13.de) 
+/**
+ * @author		David Steeb (typo3@b13.de)
  * @subpackage	tx_gabasics
- * 
+ *
  * This package includes all hook implementations.
  */
 
@@ -65,14 +65,14 @@ class tx_gabasics {
 	 * @var array
 	 */
 	protected $linkDomains = array();
-	
+
 	/**
 	 * include subdomains in Cross Domain Tracking for all domains given
 	 *
 	 * @var boolean
 	 */
 	protected $includeSubdomains = FALSE;
-	
+
 	/**
 	 * enable Download Tracking
 	 *
@@ -93,14 +93,14 @@ class tx_gabasics {
 	 * @var array
 	 */
 	protected $fileExtensionsToIgnore = array();
-	
+
 	/**
 	 * enable External Link Tracking
 	 *
 	 * @var boolean
 	 */
 	protected $externalLinkTracking = FALSE;
-	
+
 	/**
 	 * Constructor
 	 *
@@ -112,24 +112,24 @@ class tx_gabasics {
 		if (empty($this->configuration)) {
 			$this->configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extensionKey]);
 			$this->configuration = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_gabasics.']['settings.'];
-			
-				// enable Cross Domain Tracking
+
+			// enable Cross Domain Tracking
 			$this->crossDomainTracking = $this->configuration['crossdomaintracking'];
 			if ($this->crossDomainTracking) {
 				$this->linkDomains = explode(',', $this->configuration['crossdomain_domainlist']);
 				$this->linkDomains = array_map('trim', $this->linkDomains);
 				$this->includeSubdomains = $this->configuration['crossdomain_includesubdomains'];
 			}
-			
-				// enable Download Tracking
+
+			// enable Download Tracking
 			$this->downloadTracking = $this->configuration['downloadtracking'];
 			if ($this->downloadTracking) {
 				$this->fileExtensions = explode(',', $this->configuration['download_extlist']);
 				$this->fileExtensions = array_map('trim', $this->fileExtensions);
 				$this->fileExtensionsToIgnore = explode(',', $this->configuration['download_extlisttoignore']);
 			}
-			
-				// enable External Link Tracking
+
+			// enable External Link Tracking
 			$this->externalLinkTracking = $this->configuration['externallinktracking'];
 		}
 	}
@@ -144,13 +144,13 @@ class tx_gabasics {
 	 */
 	public function processAllLinks (&$parameters, &$pObj) {
 
-			// external Link Tracking
+		// external Link Tracking
 		if ($this->externalLinkTracking || $this->crossDomainTracking) {
-				// track external URL
+			// track external URL
 			if (isset($parameters['finalTagParts']['TYPE']) && $parameters['finalTagParts']['TYPE'] == 'url') {
 				if (stristr($parameters['finalTag'], 'data-gabasicsnotracking="1"')) {
 					// do not change anything
-				} 
+				}
 				else {
 					$trackCrossDomain = FALSE;
 					// check to see if we need to consider Cross Domain Tracking
@@ -158,15 +158,15 @@ class tx_gabasics {
 						foreach ($this->linkDomains as $checkdomain) {
 							if ($this->includeSubdomains) {
 								// this registers in a link like b13.de/index.php or like "b13.de"
-								if (stristr($parameters['finalTag'], '' . $checkdomain . '/') || 
+								if (stristr($parameters['finalTag'], '' . $checkdomain . '/') ||
 									stristr($parameters['finalTag'], '' . $checkdomain . '"')) {
-										$trackCrossDomain = TRUE;
+									$trackCrossDomain = TRUE;
 								}
 							} else {
 								// this registers in a link like b13.de/index.php
 								if (stristr($parameters['finalTag'], '//' . $checkdomain . '/') ||
 									stristr($parameters['finalTag'], '//' . $checkdomain . '"')) {
-										$trackCrossDomain = TRUE;
+									$trackCrossDomain = TRUE;
 								}
 							}
 						}
@@ -188,18 +188,18 @@ class tx_gabasics {
 						}
 					}
 				}
-				
+
 				return;
 			}
 		}
-		
-			// track File Downloads
+
+		// track File Downloads
 		if ($this->downloadTracking) {
 			if (isset($parameters['finalTagParts']['TYPE']) && $parameters['finalTagParts']['TYPE'] == 'file') {
 				if (stristr($parameters['finalTag'], 'data-gabasicsnotracking="1"')) {
 					// do not change anything
 				} else if (!stristr($parameters['finalTag'], 'data-gabasicstrackdownload')) {
-						// if the file has a file extension we want to skip, do not mark the link
+					// if the file has a file extension we want to skip, do not mark the link
 					if ($this->fileExtensionsToIgnore) {
 						foreach($this->fileExtensionsToIgnore as $extension) {
 							if (stristr($parameters['finalTag'], '.' . $extension)) {
@@ -207,7 +207,7 @@ class tx_gabasics {
 							}
 						}
 					}
-						// if the file has not been skipped check to see if the file extension is on the white list
+					// if the file has not been skipped check to see if the file extension is on the white list
 					if ($this->fileExtensions) {
 						foreach($this->fileExtensions as $extension) {
 							if (stristr($parameters['finalTag'], '.' . $extension)) {
@@ -219,7 +219,7 @@ class tx_gabasics {
 						}
 						return;
 					}
-						// add data tag to the final Tag output and the ATagParams if there is no white list
+					// add data tag to the final Tag output and the ATagParams if there is no white list
 					$parameters['finalTag'] = str_replace('>', ' data-gabasicstrackdownload="1">', $parameters['finalTag']);
 					$parameters['finalTagParts']['aTagParams'] .= ' data-gabasicstrackdownload="1">';
 				}
@@ -240,11 +240,11 @@ class tx_gabasics {
 
 	public function getDomainTrackingCode($content, $conf) {
 		$returnHeaderCode = "";
-			// build the header code for Cross Domain Tracking
+		// build the header code for Cross Domain Tracking
 		if ($this->crossDomainTracking && $this->linkDomains) {
-				// the domain that is being used in the current page
+			// the domain that is being used in the current page
 			$currentDomain = t3lib_div::getIndpEnv('HTTP_HOST');
-				// the domain we will give in the _setDomainName header code
+			// the domain we will give in the _setDomainName header code
 			$domainName = "";
 			foreach ($this->linkDomains as $checkdomain) {
 				if (stristr($currentDomain, $checkdomain)) {
@@ -256,11 +256,11 @@ class tx_gabasics {
 				$returnHeaderCode = "_gaq.push(['_setDomainName', '" . $domainName ."']);\r\n	";
 				$returnHeaderCode .= "_gaq.push(['_setAllowLinker', true]);\r\n	";
 			}
-				// return the header code if not still empty
+			// return the header code if not still empty
 			if ($returnHeaderCode) return $returnHeaderCode;
 		}
-			// if there is no headercode based on Cross Domain Tracking and the domain list given
-			// use the setdomain instead (for simple domain/subdomain-tracking)
+		// if there is no headercode based on Cross Domain Tracking and the domain list given
+		// use the setdomain instead (for simple domain/subdomain-tracking)
 		if ($this->configuration['setdomainname']) {
 			return "_gaq.push(['_setDomainName', '" . $this->configuration['setdomainname'] . "']);\r\n	";
 		}
@@ -288,11 +288,17 @@ class tx_gabasics {
 
 		$returnHeaderCode = "";
 
-			// build the header code for Cross Domain Tracking
+		// add siteSpeedSample as parameter if set
+		$addSiteSpeedSample = "";
+		if ($this->configuration['sitespeedsample'] !== "") {
+			$addSiteSpeedSample = "'siteSpeedSampleRate': " . $this->configuration['sitespeedsample'] . "\r\n	";
+		}
+
+		// build the header code for Cross Domain Tracking
 		if ($this->crossDomainTracking && $this->linkDomains) {
-				// the domain that is being used in the current page
+			// the domain that is being used in the current page
 			$currentDomain = t3lib_div::getIndpEnv('HTTP_HOST');
-				// the domain we will give in the _setDomainName header code
+			// the domain we will give in the _setDomainName header code
 			$domainName = "";
 			foreach ($this->linkDomains as $checkdomain) {
 				if (stristr($currentDomain, $checkdomain)) {
@@ -304,16 +310,17 @@ class tx_gabasics {
 				$returnHeaderCode  = "ga('require', 'linker');\r\n	";
 				$returnHeaderCode .= "ga('linker:autoLink', ['" . implode("', '", $this->linkDomains) . "']);\r\n	";
 				$returnHeaderCode .= "ga('create', '" . $this->configuration['ua-no'] . "', 'auto', {\r\n		"
-				. "'allowLinker': true,\r\n		"
-				. "'siteSpeedSampleRate': " . $this->configuration['sitespeedsample'] . "\r\n	"
-				. "});\r\n	";
+					. "'allowLinker': true,\r\n		"
+					. $addSiteSpeedSample
+					. "});\r\n	";
 			}
+
 
 		} else {
 			$returnHeaderCode = "ga('create', '" . $this->configuration['ua-no'] . "', 'auto', {\r\n		"
-			. "'siteSpeedSampleRate': " . $this->configuration['sitespeedsample'] . "});\r\n	";
+				. $addSiteSpeedSample . "});\r\n	";
 		}
-			// return the header code if not still empty
+		// return the header code if not still empty
 		if ($returnHeaderCode) return $returnHeaderCode;
 	}
 
@@ -321,6 +328,6 @@ class tx_gabasics {
 
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ga_basics/class.tx_gabasics.php']) {
-   include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ga_basics/class.tx_gabasics.php']);
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ga_basics/class.tx_gabasics.php']);
 }
 ?>
