@@ -122,26 +122,5 @@
 		});
 
 	}
-	
-		// push the msg to GA and fire the link action
-		// @linkAction: can be "newWindow" to open the link in a new Window, "update" to update the url or "" to do nothing
-	function doTracking(pushMsg, url, linkAction) {
-
-		// removed as we need a new way to track things with Universal Analytics
-		//try {
-		//
-		//		_gaq.push(pushMsg, function() {
-		//
-		//		// handle the reload if the linkAction is set to "update" (this means we used evt.preventDefault() before
-		//		// and need to handle the link ourselves
-		//		if (linkAction == 'update') {
-		//			window.setTimeout(function() {
-		//				window.location.href = url;
-		//			}, 300);
-		//		}
-		//
-		//	});
-		//} catch(err){ console.log(err); }
-	}
 
 })(window.jQuery);
