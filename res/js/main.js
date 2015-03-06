@@ -27,21 +27,53 @@
  * 
  * This package includes the necessary JS functions based on jQuery
  */
-(function($, undefined) {
 
-		// wait until jQuery is defined
-	try {
-		var interval = window.setInterval(function() {
-			var jQueryIsDefined = window.jQuery?true:false;
-			if (jQueryIsDefined) {
-				window.clearInterval(interval);
+;(function(factory) {
 
-				bindTrackingEvents();
-			}
-		}, 50);
-	} catch(err){ console.log(err); }
+	if (typeof define === 'function' && define.amd) {
 
+        define('ga_basics', ['jquery'], function($) {
+			factory();
+		});
 
+	} else {
+
+		var errorCount = 0;
+
+			// wait until jQuery is defined
+		try {
+			var interval = window.setInterval(function() {
+				var jQueryIsDefined = window.jQuery ? true : false;
+
+				if (jQueryIsDefined) {
+					window.clearInterval(interval);
+					factory();
+
+				} else {
+
+					if (errorCount > 100) {
+						throw "no jquery"
+
+					} else {
+						errorCount += 1;
+
+					}
+				}
+			}, 50);
+		} catch(err) { console.log(err); }
+
+    }
+
+})(function() {
+
+	var me = this;
+
+	function initialize() {
+		events();
+		return me;
+	}
+
+	function events() {
 
 		// bind tracking events
 		// if the link url should not be change your window location add a data-gabasiscupdateurl="false" to the <a>-tag
@@ -50,40 +82,38 @@
 		// a tracking function to the link. For all other targets that might be external links or change the content of
 		// our browser window that does the tracking and runs this JS we need to prevent the link from opening the href
 		// right away, do the tracking, wait and refresh the url - configured using linkAction="update"
-	function bindTrackingEvents() {
-
-		var $ = window.jQuery;
 
 
-		// tracks external links as events of type "Outbound Links"
+			// tracks external links as events of type "Outbound Links"
 		$(document).on('click', 'a[data-gabasicstrackexternal="1"], a[data-gabasicstrackdownload="1"], a[data-gabasicstrackclick="1"]', function(evt) {
 
-			var	$this        = $(this)
-				,eventCategory    = 'Default Event';
+			var
+				$this           = $(this)
+				, eventCategory = 'Default Event';
 
-			// track external links
+				// track external links
 			if ($this.data('gabasicstrackexternal') == 1) {
-				var eventCategory = 'Outbound Link';
+				eventCategory = 'Outbound Link';
 			}
-			// track downloaded files
+				// track downloaded files
 			if ($this.data('gabasicstrackdownload') == 1) {
-				var eventCategory = 'Download';
+				eventCategory = 'Download';
 			}
-			// track clicks
+				// track clicks
 			if ($this.data('gabasicstrackclick') == 1) {
-				var eventCategory = $this.data('gabasicseventcategory') ? $(this).data('gabasicseventcategory') : 'Click';
+				eventCategory = $this.data('gabasicseventcategory') ? $(this).data('gabasicseventcategory') : 'Click';
 			}
 
 			var
-				url	        = $this.attr('href')
-				,linkAction = $this.attr('target') === "_blank" ? '' : 'update'
-				,eventAction      = $this.data('gabasicseventaction') ? $(this).data('gabasicseventaction') : ( $this.attr('title') ? $(this).attr('title') : url )
-				,eventLabel = $this.data('gabasicseventlabel') ? $(this).data('gabasicseventlabel') : ( $this.attr('alt') ? $(this).attr('alt') : url );
+				url	          = $this.attr('href')
+				, linkAction  = $this.attr('target') === "_blank" ? '' : 'update'
+				, eventAction = $this.data('gabasicseventaction') ? $(this).data('gabasicseventaction') : ( $this.attr('title') ? $(this).attr('title') : url )
+				, eventLabel  = $this.data('gabasicseventlabel')  ? $(this).data('gabasicseventlabel')  : ( $this.attr('alt')   ? $(this).attr('alt')   : url );
 
 			if ($this.data('gabasiscupdateurl') == false) { linkAction = ''; }
 			if (linkAction == 'update') { evt.preventDefault(); }
-
-			// fire the event tracking
+			
+				// fire the event tracking
 			try {
 				ga('send', {
 					'hitType': 'event',
@@ -101,26 +131,10 @@
 					}
 				});
 			} catch(err) { console.log(err); }
-
 		});
 
-
-			// for multi-domain tracking
-			// sets gaq.push-link parameter so Google Analytics won't set referers from our own domains
-		$(document).on('click', 'a[data-gabasicstracklink="1"]', function(evt) {
-
-			var
-				$this       = $(this)
-				,url	    = $this.attr('href')
-				,linkAction = $this.attr('target') === "_blank" ? '' : 'update'
-				,pushMsg    = ['_link', url];
-				
-			if ($this.data('gabasiscupdateurl') == false) { linkAction = ''; }
-			if (linkAction == 'update') { evt.preventDefault(); }
-
-			doTracking(pushMsg, url, linkAction);
-		});
-
+		// TODO: add event for multi-domain tracking
 	}
 
-})(window.jQuery);
+	return initialize();
+});
