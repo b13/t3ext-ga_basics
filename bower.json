@@ -2,6 +2,15 @@
   "name": "ga_basics",
   "version": "1.0.0",
   "main": "res/js/main.js",
+  "ignore": [
+    "doc",
+    "pi1",
+    "static",
+    "ext_*",
+    "icon.png",
+    "class.tx_gabasics.php",
+    "locallang_db.xml"
+  ],
   "dependencies": {
     "jquery": ">= 1.8.0"
   }
