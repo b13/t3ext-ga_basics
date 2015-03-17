@@ -286,13 +286,8 @@ class tx_gabasics {
 
 	public function getTrackingConfigurationCode($content, $conf) {
 
-		$returnHeaderCode = "";
-
-		// add siteSpeedSample as parameter if set
-		$addSiteSpeedSample = "";
-		if ($this->configuration['sitespeedsample'] !== "") {
-			$addSiteSpeedSample = "'siteSpeedSampleRate': " . $this->configuration['sitespeedsample'] . "\r\n	";
-		}
+		$returnHeaderCode = $sitespeedsamplecode = "";
+		if ($this->configuration['sitespeedsample']) $sitespeedsamplecode =  "'siteSpeedSampleRate': " . $this->configuration['sitespeedsample'];
 
 		// build the header code for Cross Domain Tracking
 		if ($this->crossDomainTracking && $this->linkDomains) {
@@ -311,14 +306,14 @@ class tx_gabasics {
 				$returnHeaderCode .= "ga('linker:autoLink', ['" . implode("', '", $this->linkDomains) . "']);\r\n	";
 				$returnHeaderCode .= "ga('create', '" . $this->configuration['ua-no'] . "', 'auto', {\r\n		"
 					. "'allowLinker': true,\r\n		"
-					. $addSiteSpeedSample
+					. $sitespeedsamplecode . "\r\n	"
 					. "});\r\n	";
 			}
 
-
 		} else {
-			$returnHeaderCode = "ga('create', '" . $this->configuration['ua-no'] . "', 'auto', {\r\n		"
-				. $addSiteSpeedSample . "});\r\n	";
+			$returnHeaderCode = "ga('create', '" . $this->configuration['ua-no'] . "', 'auto'"
+				. ($sitespeedsamplecode ? ", {\r\n		" . $sitespeedsamplecode . "}" : "")
+				. ");\r\n	";
 		}
 		// return the header code if not still empty
 		if ($returnHeaderCode) return $returnHeaderCode;
